@@ -1,0 +1,264 @@
+{
+    "title": "JSON/YAML schema for Zuul CI job configuration files",
+    "description": "Used for quick validation of Zuul CI job configuration files.",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "type": "array",
+    "additionalProperties": false,
+    "items": {
+        "type": "object",
+        "anyOf": [
+            {
+                "type": "object"
+            }
+        ],
+        "oneOf": [
+            {
+                "required": [
+                    "nodeset"
+                ]
+            },
+            {
+                "required": [
+                    "job"
+                ]
+            },
+            {
+                "required": [
+                    "pragma"
+                ]
+            },
+            {
+                "required": [
+                    "project"
+                ]
+            },
+            {
+                "required": [
+                    "pipeline"
+                ]
+            },
+            {
+                "required": [
+                    "project-template"
+                ]
+            },
+            {
+                "required": [
+                    "secret"
+                ]
+            },
+            {
+                "required": [
+                    "semaphore"
+                ]
+            }
+        ],
+        "properties": {
+            "job": {
+                "type": "object",
+                "$ref": "#/definitions/job"
+            }
+        }
+    },
+    "definitions": {
+        "job": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "abstract": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "allowed-projects": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "ansible-version": {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "attempts": {
+                    "type": "number"
+                },
+                "branches": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "cleanup-run": {
+                    "type": [
+                        "array",
+                        "string"
+                    ]
+                },
+                "dependencies": {
+                    "type": [
+                        "array",
+                        "string"
+                    ]
+                },
+                "extra-vars": {
+                    "type": "object"
+                },
+                "failure-message": {
+                    "type": "string"
+                },
+                "failure-url": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": [
+                        "array",
+                        "string"
+                    ]
+                },
+                "final": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "group-vars": {
+                    "type": "object"
+                },
+                "host-vars": {
+                    "type": "object"
+                },
+                "irrelevant-files": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "match-on-config-updates": {
+                    "type": "boolean"
+                },
+                "nodeset": {
+                    "type": [
+                        "string",
+                        "object"
+                    ]
+                },
+                "override-branch": {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "override-checkout": {
+                    "type": [
+                        "string",
+                        "number"
+                    ]
+                },
+                "parent": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "post-review": {
+                    "type": "boolean"
+                },
+                "post-run": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "post-timeout": {
+                    "type": "integer"
+                },
+                "pre-run": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "protected": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "provides": {
+                    "type": "string"
+                },
+                "required-projects": {
+                    "type": [
+                        "array"
+                    ]
+                },
+                "requires": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "roles": {
+                    "type": "array"
+                },
+                "run": {
+                    "type": [
+                        "string",
+                        "array"
+                    ]
+                },
+                "secrets": {
+                    "type": [
+                        "string",
+                        "object",
+                        "array"
+                    ]
+                },
+                "semaphore": {
+                    "type": [
+                        "string",
+                        "object"
+                    ]
+                },
+                "success-url": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array"
+                },
+                "timeout": {
+                    "type": "integer"
+                },
+                "vars": {
+                    "type": "object"
+                },
+                "voting": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "nodeset": {
+            "type": "object",
+            "additionalProperties": false
+        },
+        "project": {
+            "type": "object",
+            "additionalProperties": false
+        },
+        "secret": {
+            "type": "object"
+        },
+        "semaphore": {
+            "type": "object",
+            "additionalProperties": false
+        }
+    }
+}
