@@ -1,4 +1,5 @@
-from jsonschema import validate
+from __future__ import print_function
+from jsonschema import Draft7Validator
 import argparse
 import json
 import os
@@ -16,17 +17,24 @@ def zuul_schema():
 def lint(f, schema):
     print(f)
     errors = 0
+    # we use Draft7Validator() because validate() can give misleading errors,
+    # see https://github.com/Julian/jsonschema/issues/646
+    v = Draft7Validator(schema)
+
     with open(f, "r") as yaml_in:
         try:
             obj = yaml.safe_load(yaml_in)
-            validate(instance=obj, schema=schema)
+            va_errors = v.iter_errors(obj)
+            for e in va_errors:
+                print(e, file=sys.stderr)
+                errors += 1
         except Exception as e:
             print(e)
             errors += 1
     return errors
 
 
-def main():  # pragma: no cover
+def main():
     """Zuul Lint
     """
     parser = argparse.ArgumentParser(prog="zuul-lint")
@@ -43,6 +51,7 @@ def main():  # pragma: no cover
         errors += lint(f, schema=schema)
 
     if errors:
+        sys.stderr.flush()
         print("Failed with %s errors." % errors)
         sys.exit(1)
 
