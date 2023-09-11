@@ -35,8 +35,7 @@ def lint(f, schema):
 
 
 def main():
-    """Zuul Lint
-    """
+    """Zuul Lint"""
     parser = argparse.ArgumentParser(prog="zuul-lint")
     parser.add_argument(
         "--version",
