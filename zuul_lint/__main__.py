@@ -8,6 +8,18 @@ import sys
 import yaml
 
 
+# Define a custom constructor for the '!encrypted/pkcs1-oaep' tag
+def encrypted_pkcs1_oaep_constructor(loader, node):
+    value = loader.construct_sequence(node)
+    return value
+
+
+# Register the custom constructor
+yaml.SafeLoader.add_constructor(
+    "!encrypted/pkcs1-oaep", encrypted_pkcs1_oaep_constructor
+)
+
+
 def zuul_schema():
     x = os.path.join(os.path.dirname(os.path.abspath(__file__)), "zuul-schema.json")
     with open(x, "r") as f:

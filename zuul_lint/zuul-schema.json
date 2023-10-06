@@ -1,268 +1,560 @@
 {
-    "title": "JSON/YAML schema for Zuul CI job configuration files",
-    "description": "Used for quick validation of Zuul CI job configuration files.",
-    "$schema": "https://json-schema.org/draft/2019-09/schema",
-    "version": 0.1,
-    "type": "array",
-    "additionalProperties": false,
-    "items": {
-        "type": "object",
-        "anyOf": [
-            {
-                "type": "object"
-            }
-        ],
-        "oneOf": [
-            {
-                "required": [
-                    "nodeset"
-                ]
-            },
-            {
-                "required": [
-                    "job"
-                ]
-            },
-            {
-                "required": [
-                    "pragma"
-                ]
-            },
-            {
-                "required": [
-                    "project"
-                ]
-            },
-            {
-                "required": [
-                    "pipeline"
-                ]
-            },
-            {
-                "required": [
-                    "project-template"
-                ]
-            },
-            {
-                "required": [
-                    "secret"
-                ]
-            },
-            {
-                "required": [
-                    "semaphore"
-                ]
-            }
-        ],
-        "properties": {
-            "job": {
-                "type": "object",
-                "$ref": "#/definitions/job"
-            }
-        }
-    },
+    "$id": "https://json.schemastore.org/zuul.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "job": {
-            "type": "object",
+        "JobEntry": {
             "additionalProperties": false,
             "properties": {
-                "name": {
+                "job": {
+                    "$ref": "#/definitions/JobModel"
+                }
+            },
+            "required": [
+                "job"
+            ],
+            "title": "JobEntry",
+            "type": "object"
+        },
+        "JobModel": {
+            "additionalProperties": false,
+            "properties": {
+                "abstract": {
+                    "default": false,
+                    "title": "Abstract",
+                    "type": "boolean"
+                },
+                "allowed-projects": {
+                    "title": "Allowed-Projects",
+                    "type": "string"
+                },
+                "ansible-version": {
+                    "anyOf": [
+                        {
+                            "type": "number"
+                        },
+                        {
+                            "enum": [
+                                "6",
+                                "8"
+                            ],
+                            "type": "string"
+                        }
+                    ],
+                    "title": "Ansible-Version"
+                },
+                "attempts": {
+                    "title": "Attempts",
+                    "type": "integer"
+                },
+                "branches": {
+                    "title": "Branches",
                     "type": "string"
                 },
                 "description": {
+                    "title": "Description",
                     "type": "string"
-                },
-                "abstract": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "allowed-projects": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
-                },
-                "ansible-version": {
-                    "type": [
-                        "string",
-                        "number"
-                    ]
-                },
-                "attempts": {
-                    "type": "number"
-                },
-                "branches": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
-                },
-                "cleanup-run": {
-                    "type": [
-                        "array",
-                        "string"
-                    ]
                 },
                 "dependencies": {
-                    "type": [
-                        "array",
-                        "string"
-                    ]
-                },
-                "extra-vars": {
-                    "type": "object"
-                },
-                "failure-message": {
-                    "type": "string"
+                    "anyOf": [
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        {
+                            "items": {
+                                "$ref": "#/definitions/JobDependencyModel"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Files"
                 },
                 "failure-url": {
+                    "title": "Failure-Url",
                     "type": "string"
                 },
                 "files": {
-                    "type": [
-                        "array",
-                        "string"
-                    ]
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Files"
                 },
                 "final": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "group-vars": {
-                    "type": "object"
+                    "default": false,
+                    "title": "Final",
+                    "type": "boolean"
                 },
                 "host-vars": {
+                    "additionalProperties": {
+                        "type": "object"
+                    },
+                    "title": "Host-Vars",
                     "type": "object"
                 },
                 "irrelevant-files": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Irrelevant-Files"
                 },
-                "match-on-config-updates": {
-                    "type": "boolean"
+                "name": {
+                    "title": "Name",
+                    "type": "string"
                 },
                 "nodeset": {
-                    "type": [
-                        "string",
-                        "object"
-                    ]
-                },
-                "override-branch": {
-                    "type": [
-                        "string",
-                        "number"
-                    ]
+                    "title": "Nodeset"
                 },
                 "override-checkout": {
-                    "type": [
-                        "string",
-                        "number"
-                    ]
+                    "title": "Override-Checkout",
+                    "type": "string"
                 },
                 "parent": {
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                },
-                "post-review": {
-                    "type": "boolean"
+                    "title": "Parent",
+                    "type": "string"
                 },
                 "post-run": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Post-Run"
                 },
                 "post-timeout": {
+                    "title": "Post-Timeout",
                     "type": "integer"
                 },
                 "pre-run": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
-                },
-                "protected": {
-                    "type": "boolean",
-                    "default": false
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Pre-Run"
                 },
                 "provides": {
-                    "type": "string"
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Provides",
+                    "type": "array"
                 },
                 "required-projects": {
-                    "type": [
-                        "array"
-                    ]
+                    "items": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "$ref": "#/definitions/RequiredProjectModel"
+                            }
+                        ]
+                    },
+                    "title": "Required-Projects",
+                    "type": "array"
                 },
                 "requires": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Requires",
+                    "type": "array"
                 },
                 "roles": {
-                    "type": "array",
-                    "contains": {
-                        "type": "object"
-                    }
+                    "items": {
+                        "$ref": "#/definitions/ZuulRoleModel"
+                    },
+                    "title": "Roles",
+                    "type": "array"
                 },
                 "run": {
-                    "type": [
-                        "string",
-                        "array"
-                    ]
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Run"
                 },
                 "secrets": {
-                    "type": [
-                        "string",
-                        "object",
-                        "array"
-                    ]
-                },
-                "semaphore": {
-                    "type": [
-                        "string",
-                        "object"
-                    ]
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/JobSecretModel"
+                        },
+                        {
+                            "items": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/definitions/JobSecretModel"
+                                    },
+                                    {
+                                        "type": "string"
+                                    }
+                                ]
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Secrets"
                 },
                 "success-url": {
+                    "title": "Success-Url",
                     "type": "string"
                 },
                 "tags": {
-                    "type": "array"
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    ],
+                    "title": "Tags"
                 },
                 "timeout": {
+                    "title": "Timeout",
                     "type": "integer"
                 },
                 "vars": {
+                    "title": "Vars",
                     "type": "object"
                 },
                 "voting": {
-                    "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "title": "Voting",
+                    "type": "boolean"
+                },
+                "workspace-scheme": {
+                    "title": "Workspace Scheme",
+                    "enum": [
+                        "flat",
+                        "golang",
+                        "unique"
+                    ],
+                    "type": "string"
                 }
             },
             "required": [
                 "name"
-            ]
-        },
-        "nodeset": {
-            "type": "object",
-            "additionalProperties": false
-        },
-        "project": {
-            "type": "object",
-            "additionalProperties": false
-        },
-        "secret": {
+            ],
+            "title": "JobModel",
             "type": "object"
         },
-        "semaphore": {
-            "type": "object",
-            "additionalProperties": false
+        "JobDependencyModel": {
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "soft": {
+                    "default": false,
+                    "title": "Soft",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "JobDependencyModel",
+            "type": "object"
+        },
+        "JobSecretModel": {
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "pass-to-parent": {
+                    "default": false,
+                    "title": "Pass-To-Parent",
+                    "type": "boolean"
+                },
+                "secret": {
+                    "title": "Secret",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "secret"
+            ],
+            "title": "JobSecretModel",
+            "type": "object"
+        },
+        "PipelineModel": {
+            "additionalProperties": false,
+            "properties": {
+                "jobs": {
+                    "items": {},
+                    "title": "Jobs",
+                    "type": "array"
+                },
+                "queue": {
+                    "title": "Queue",
+                    "type": "string"
+                }
+            },
+            "title": "PipelineModel",
+            "type": "object"
+        },
+        "ProjectEntry": {
+            "additionalProperties": false,
+            "properties": {
+                "project": {
+                    "$ref": "#/definitions/ProjectModel"
+                }
+            },
+            "required": [
+                "project"
+            ],
+            "title": "ProjectEntry",
+            "type": "object"
+        },
+        "ProjectModel": {
+            "additionalProperties": false,
+            "properties": {
+                "check": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "default-branch": {
+                    "title": "Default-Branch",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "gate": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "periodic-weekly": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "post": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "promote": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "queue": {
+                    "title": "Queue",
+                    "type": "string"
+                },
+                "release": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "templates": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Templates",
+                    "type": "array"
+                },
+                "third-party-check": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "vars": {
+                    "title": "Vars",
+                    "type": "object"
+                }
+            },
+            "title": "ProjectModel",
+            "type": "object"
+        },
+        "ProjectTemplateEntry": {
+            "additionalProperties": false,
+            "properties": {
+                "project-template": {
+                    "$ref": "#/definitions/ProjectTemplateModel"
+                }
+            },
+            "required": [
+                "project-template"
+            ],
+            "title": "ProjectTemplateEntry",
+            "type": "object"
+        },
+        "ProjectTemplateModel": {
+            "additionalProperties": false,
+            "properties": {
+                "check": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "default-branch": {
+                    "title": "Default-Branch",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "gate": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "periodic-weekly": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "post": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "promote": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "queue": {
+                    "title": "Queue",
+                    "type": "string"
+                },
+                "release": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "third-party-check": {
+                    "$ref": "#/definitions/PipelineModel"
+                },
+                "vars": {
+                    "title": "Vars",
+                    "type": "object"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "ProjectTemplateModel",
+            "type": "object"
+        },
+        "RequiredProjectModel": {
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "override-checkout": {
+                    "title": "Override-Checkout",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "RequiredProjectModel",
+            "type": "object"
+        },
+        "SecretEntry": {
+            "additionalProperties": false,
+            "properties": {
+                "secret": {
+                    "$ref": "#/definitions/SecretModel"
+                }
+            },
+            "required": [
+                "secret"
+            ],
+            "title": "SecretEntry",
+            "type": "object"
+        },
+        "SecretModel": {
+            "additionalProperties": false,
+            "properties": {
+                "data": {
+                    "title": "Data",
+                    "type": "object"
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "data"
+            ],
+            "title": "SecretModel",
+            "type": "object"
+        },
+        "ZuulRoleModel": {
+            "additionalProperties": false,
+            "properties": {
+                "zuul": {
+                    "title": "Zuul",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "zuul"
+            ],
+            "title": "ZuulRoleModel",
+            "type": "object"
         }
-    }
+    },
+    "examples": [
+        "zuul.d/*.yaml",
+        "zuul-tests.d/*.yaml",
+        ".zuul.yaml"
+    ],
+    "items": {
+        "anyOf": [
+            {
+                "$ref": "#/definitions/JobEntry"
+            },
+            {
+                "$ref": "#/definitions/ProjectEntry"
+            },
+            {
+                "$ref": "#/definitions/ProjectTemplateEntry"
+            },
+            {
+                "$ref": "#/definitions/SecretEntry"
+            }
+        ]
+    },
+    "title": "Zuul Config Schema",
+    "type": "array"
 }
