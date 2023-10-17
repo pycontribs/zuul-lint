@@ -1,53 +1,88 @@
-from __future__ import print_function
-from jsonschema import Draft7Validator
+"""ZuuL Lint.
+
+A linter for Zuul configuration files.
+"""
 import argparse
 import json
-import os
-import pkg_resources
+import pathlib
 import sys
+
+import pkg_resources
 import yaml
+from jsonschema import Draft7Validator
 
 
-# Define a custom constructor for the '!encrypted/pkcs1-oaep' tag
 def encrypted_pkcs1_oaep_constructor(loader, node):
-    value = loader.construct_sequence(node)
-    return value
+    """Construct a sequence from a YAML node representing an encrypted PKCS#1 OAEP key.
+
+    Args:
+    ----
+        loader: A YAML loader object.
+        node: A YAML node representing the encrypted key.
+
+    Returns:
+    -------
+        A sequence of bytes representing the encrypted key.
+    """
+    return loader.construct_sequence(node)
 
 
-# Register the custom constructor
+# Register the custom yaml constructor
 yaml.SafeLoader.add_constructor(
-    "!encrypted/pkcs1-oaep", encrypted_pkcs1_oaep_constructor
+    "!encrypted/pkcs1-oaep", encrypted_pkcs1_oaep_constructor,
 )
 
 
 def zuul_schema():
-    x = os.path.join(os.path.dirname(os.path.abspath(__file__)), "zuul-schema.json")
-    with open(x, "r") as f:
+    """Load the Zuul schema from a JSON file.
+
+    Returns
+    -------
+        A dictionary representing the Zuul schema.
+    """
+    x = pathlib.Path(__file__).parent / "zuul-schema.json"
+    with pathlib.Path.open(x, encoding="utf-8") as f:
         return json.load(f)
 
 
 def lint(f, schema):
+    """Validate a YAML file against a JSON schema.
+
+    Args:
+    ----
+        f: A string representing the path to the YAML file to validate.
+        schema: A JSON schema to validate against.
+
+    Returns:
+    -------
+        The number of validation errors encountered.
+    """
     print(f)
     errors = 0
     # we use Draft7Validator() because validate() can give misleading errors,
     # see https://github.com/Julian/jsonschema/issues/646
     v = Draft7Validator(schema)
 
-    with open(f, "r") as yaml_in:
+    with pathlib.Path.open(pathlib.Path(f), encoding="utf-8") as yaml_in:
         try:
             obj = yaml.safe_load(yaml_in)
             va_errors = v.iter_errors(obj)
             for e in va_errors:
                 print(e, file=sys.stderr)
                 errors += 1
-        except Exception as e:
+        except yaml.YAMLError as e:
             print(e)
             errors += 1
     return errors
 
 
 def main():
-    """Zuul Lint"""
+    """Parse command-line arguments and run the Zuul linter on the specified file(s).
+
+    Returns
+    -------
+        None.
+    """
     parser = argparse.ArgumentParser(prog="zuul-lint")
     parser.add_argument(
         "--version",
@@ -63,7 +98,7 @@ def main():
 
     if errors:
         sys.stderr.flush()
-        print("Failed with %s errors." % errors)
+        print(f"Failed with {errors} errors.")
         sys.exit(1)
 
 
