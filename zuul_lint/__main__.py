@@ -3,11 +3,11 @@
 A linter for Zuul configuration files.
 """
 import argparse
+import importlib.metadata
 import json
 import pathlib
 import sys
 
-import pkg_resources
 import yaml
 from jsonschema import Draft7Validator
 
@@ -87,7 +87,7 @@ def main():
     parser.add_argument(
         "--version",
         action="version",
-        version=pkg_resources.get_distribution("zuul_lint").version,
+        version=importlib.metadata.version("zuul-lint"),
     )
     parser.add_argument("file", nargs="+", help="file(s) to lint")
     args = parser.parse_args()
