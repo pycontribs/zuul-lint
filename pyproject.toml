@@ -6,7 +6,6 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.ruff]
-required-version = "0.0.292"
 ignore = [
   "D211", # No blank lines allowed after function docstring
   "D213", # Multi-line docstring summary should start at the second line
